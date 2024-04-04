@@ -15,5 +15,6 @@ class CatData(
     val dogFriendly: Int,
     val energyLevel: Int,
     val rare: Int,
+    val link: String,
 ) {
 }
