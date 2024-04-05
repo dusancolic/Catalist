@@ -1,6 +1,8 @@
 package com.example.catalist.repository
 
-import com.example.catalist.model.CatData
+import com.example.catalist.domain.CatData
+import kotlinx.coroutines.delay
+import kotlin.time.Duration.Companion.seconds
 
 object Repository {
     private var mutableData = SampleData.toMutableList()
@@ -15,6 +17,15 @@ object Repository {
             return mutableData
         return mutableData.filter { it.name.contains(search, ignoreCase = true) }
     }
+    suspend fun loadCats() : List<CatData> {
+        delay(2.seconds)
+        return mutableData
+    }
+    suspend fun loadCatDetails(catId : String) : CatData? {
+        delay(1.seconds)
+        return getById(catId)
+    }
+
     fun randomThreeTemeperaments(name : String) : List<String>
     {
         val cat = mutableData.find { it.name == name }

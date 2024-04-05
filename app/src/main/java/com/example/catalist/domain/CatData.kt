@@ -1,4 +1,4 @@
-package com.example.catalist.model
+package com.example.catalist.domain
 
 class CatData(
     val id: String,

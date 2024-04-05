@@ -12,8 +12,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.catalist.repository.Repository
-import com.example.catalist.screen.CatListScreen
-import com.example.catalist.ui.theme.CatalistTheme
+import com.example.catalist.list.CatListScreen
+import com.example.catalist.core.theme.CatalistTheme
+import com.example.catalist.navigation.AppNavigation
 
 class MainActivity : ComponentActivity() {
     @OptIn(ExperimentalMaterial3Api::class)
@@ -21,32 +22,17 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             CatalistTheme {
-                // A surface container using the 'background' color from the theme
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
-                ) {
-                    CatListScreen(items = Repository.allData(), onClick = {})
-
-                    }
+                AppNavigation()
+//                // A surface container using the 'background' color from the theme
+//                Surface(
+//                    modifier = Modifier.fillMaxSize(),
+//                    color = MaterialTheme.colorScheme.background
+//                ) {
+//                    CatListScreen(items = Repository.allData(), onClick = {})
+//
+//                    }
                 }
            }
         }
     }
 
-
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    CatalistTheme {
-        Greeting("Android")
-    }
-}

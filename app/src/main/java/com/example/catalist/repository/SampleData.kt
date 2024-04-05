@@ -1,6 +1,6 @@
 package com.example.catalist.repository
 
-import com.example.catalist.model.CatData
+import com.example.catalist.domain.CatData
 
 val SampleData = listOf(
     CatData(
