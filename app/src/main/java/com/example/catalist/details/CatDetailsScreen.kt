@@ -1,6 +1,5 @@
 package com.example.catalist.details
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -34,7 +33,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -48,7 +46,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import com.example.catalist.R
+import coil.compose.SubcomposeAsyncImage
 import com.example.catalist.core.compose.BoxForStates
 import com.example.catalist.core.compose.NoCatIdFound
 import com.example.catalist.repository.Repository
@@ -102,8 +100,9 @@ fun CatDetailsScreen(
                         navigationIcon = {
 
                             Icon(
-                                modifier = Modifier.padding(start = 16.dp).
-                                    clickable(onClick = clicked),
+                                modifier = Modifier
+                                    .padding(start = 16.dp)
+                                    .clickable(onClick = clicked),
                                 imageVector = Icons.Default.ArrowBack,
                                 contentDescription = null,
                             )
@@ -133,23 +132,27 @@ fun CatDetailsScreen(
                     Text(
                         modifier = Modifier
                             .padding(12.dp),
-                        text = "About ${state.cat?.name}",
+                        text = "About ${state.cat.name}",
                         fontSize = 24.sp,
                         color = Color.hsl(185F, 0.61F, 0.5F),
                         fontWeight = FontWeight.Bold
                     )
+                    val altName = if(state.cat.alt_names.length < 2) "" else " (Also known as '${state.cat.alt_names}')"
+
                     Text(
-                        text = "(Also known as '${state.cat?.alternativeName}')",
+                        text = altName,
                         fontSize = 16.sp,
                         color = Color.hsl(185F, 0.25F, 0.55F),
                         fontWeight = FontWeight.Bold
                     )
-                    Image(
-                        painter = painterResource(id = R.drawable.images),
-                        contentDescription = "image of ${state.cat?.name}",
+                    SubcomposeAsyncImage(
                         modifier = Modifier
-                            .size(180.dp),
+                            .size(300.dp)
+                            .fillMaxSize(),
+                        model = state.cat.image.url,
+                        contentDescription = null,
                     )
+                    Spacer(modifier = Modifier.height(16.dp))
                     Card(
                         modifier = Modifier
                             .padding(horizontal = 16.dp)
@@ -162,8 +165,8 @@ fun CatDetailsScreen(
                         Spacer(modifier = Modifier.height(16.dp))
                         MyRow(text1 = "Description:", text2 = state.cat.description)
                         MyRow(text1 = "Temperament:", text2 = state.cat.temperament)
-                        MyRow(text1 = "Life span:", text2 = "${state.cat.lifeSpan} years")
-                        MyRow(text1 = "Weight:", text2 = " ${state.cat.weight} lbs")
+                        MyRow(text1 = "Life span:", text2 = "${state.cat.life_span} years")
+                        MyRow(text1 = "Weight:", text2 = " ${state.cat.weight.metric} lbs")
                         val rare = state.cat.rare
                         MyRow(text1 = "Rare:", text2 = if (rare == 0) "Not Rare" else "Rare")
 
@@ -174,9 +177,9 @@ fun CatDetailsScreen(
                             text = "Grooming",
                             number = state.cat.grooming ?: 0
                         )
-                        MyBehaviour(text = "Stranger Friendly", number = state.cat.strangerFriendly)
-                        MyBehaviour(text = "Dog Friendly", number = state.cat.dogFriendly )
-                        MyBehaviour(text = "Energy Level", number = state.cat.energyLevel )
+                        MyBehaviour(text = "Stranger Friendly", number = state.cat.stranger_friendly)
+                        MyBehaviour(text = "Dog Friendly", number = state.cat.dog_friendly )
+                        MyBehaviour(text = "Energy Level", number = state.cat.energy_level )
 
                         MyTitle(text = "Originates from")
                         Row(
@@ -187,7 +190,7 @@ fun CatDetailsScreen(
                             MyText(text = state.cat.origin)
                         }
                         MyTitle(text = "Link to Wikipedia page")
-                        MyText(text = state.cat.link)
+                        MyText(text = state.cat.wikipedia_url)
 
 
                     }

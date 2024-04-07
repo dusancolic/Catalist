@@ -2,7 +2,9 @@ package com.example.catalist.list
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.catalist.api.model.CatData
 import com.example.catalist.repository.Repository
+import com.example.catalist.list.model.CatUiModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -29,8 +31,8 @@ class CatListViewModel constructor(
             setState { copy(isLoading = true) }
             try{
                 withContext(Dispatchers.IO){
-                   val cats = repository.loadCats()
-                    setState { copy(cats = cats) }
+                   val cats = repository.loadCats().map { it.asCatUiModel() }
+                    setState { copy(cats = cats)}
                 }
 
             }
@@ -42,5 +44,12 @@ class CatListViewModel constructor(
             }
         }
     }
+    private fun CatData.asCatUiModel() = CatUiModel(
+        id = this.id,
+        name = this.name,
+        alt_names = this.alt_names,
+        description = this.description,
+        temperament = this.temperament,
+    )
 
 }

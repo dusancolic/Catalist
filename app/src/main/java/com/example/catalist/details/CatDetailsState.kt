@@ -1,6 +1,6 @@
 package com.example.catalist.details
 
-import com.example.catalist.domain.CatData
+import com.example.catalist.api.model.CatData
 
 data class CatDetailsState(
     val cat : CatData? = null,

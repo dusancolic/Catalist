@@ -4,19 +4,16 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.KeyboardArrowRight
@@ -55,10 +52,11 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import com.example.catalist.R
 import com.example.catalist.core.compose.BoxForStates
-import com.example.catalist.domain.CatData
+import com.example.catalist.api.model.CatData
 import com.example.catalist.repository.Repository
 import com.example.catalist.repository.SampleData
 import com.example.catalist.core.theme.CatalistTheme
+import com.example.catalist.list.model.CatUiModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 fun NavGraphBuilder.catsList(route : String, navController : NavController) {
@@ -79,7 +77,7 @@ fun NavGraphBuilder.catsList(route : String, navController : NavController) {
 fun CatListScreen(
     //items: List<CatData>,
     state: CatListState,
-    onClick: (CatData) -> Unit,
+    onClick: (CatUiModel) -> Unit,
 )
 {
     val keyboard = LocalSoftwareKeyboardController.current
@@ -155,8 +153,14 @@ fun CatListScreen(
                     Spacer(modifier = Modifier.height(16.dp))
                     if (state.cats.isEmpty()) {
                         if (state.isLoading) {
-                            BoxForStates("Loading...")
-                            CircularProgressIndicator()
+                            Image(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .fillMaxHeight(),
+                                painter = painterResource(id = R.drawable.loadingcat),
+                                contentDescription = "loading",
+                            )
+                            BoxForStates(text = "Loading cats...")
                         } else if (state.error != null) {
                             BoxForStates("Error: ${state.error.message}")
                         } else {
@@ -184,10 +188,10 @@ fun CatListScreen(
 
 @Composable
 private fun CatListItem(
-    data: CatData,
+    data: CatUiModel,
     onClick: () -> Unit,
     threeOfTemps: List<String> = remember {
-        Repository.randomThreeTemeperaments(data.name)
+        randomThreeTemeperaments(data)
     },
 ) {
     Card(
@@ -198,7 +202,7 @@ private fun CatListItem(
                 onClick()
             },
     ) {
-        val altName = if(data.alternativeName == null) "" else " (" + data.alternativeName + ")"
+        val altName = if(data.alt_names.length < 2) "" else " (" + data.alt_names + ")"
         Text(
                 modifier = Modifier.padding(all = 16.dp),
                 text = data.name + altName,
@@ -250,6 +254,19 @@ private fun String.cutToLastDot(maxLength: Int): String {
         }
     }
 }
+private fun randomThreeTemeperaments(cat : CatUiModel) : List<String>
+{
+    val list = mutableListOf<String>()
+
+    val tempList = cat.temperament.split(", ")
+    val random = tempList.indices.shuffled().take(3)
+    for(i in random)
+    {
+        list.add(tempList[i])
+    }
+    return list
+}
+/*
 @OptIn(ExperimentalMaterial3Api::class)
 @Preview
 @Composable
@@ -260,4 +277,4 @@ fun PreviewCatListScreen() {
             onClick = {}
         )
     }
-}
+}*/
