@@ -5,7 +5,7 @@ import kotlinx.coroutines.delay
 import kotlin.time.Duration.Companion.seconds
 
 object Repository {
-    private var mutableData = SampleData.toMutableList()
+    private val mutableData = SampleData.toMutableList()
 
     fun allData() : List<CatData> = mutableData
 

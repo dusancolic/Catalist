@@ -160,23 +160,23 @@ fun CatDetailsScreen(
 
                         MyTitle(text = "Description and Basic Information")
                         Spacer(modifier = Modifier.height(16.dp))
-                        MyRow(text1 = "Description:", text2 = "${state.cat?.description}")
-                        MyRow(text1 = "Temperament:", text2 = "${state.cat?.temperament}")
-                        MyRow(text1 = "Life span:", text2 = "${state.cat?.lifeSpan} years")
-                        MyRow(text1 = "Weight:", text2 = " ${state.cat?.weight} lbs")
+                        MyRow(text1 = "Description:", text2 = state.cat.description)
+                        MyRow(text1 = "Temperament:", text2 = state.cat.temperament)
+                        MyRow(text1 = "Life span:", text2 = "${state.cat.lifeSpan} years")
+                        MyRow(text1 = "Weight:", text2 = " ${state.cat.weight} lbs")
                         val rare = state.cat.rare
                         MyRow(text1 = "Rare:", text2 = if (rare == 0) "Not Rare" else "Rare")
 
                         Spacer(modifier = Modifier.height(16.dp))
 
-                        MyBehaviour(text = "Adaptability", number = state.cat?.adaptability ?: 0)
+                        MyBehaviour(text = "Adaptability", number = state.cat.adaptability)
                         MyBehaviour(
-                            text = "Affection Level",
-                            number = state.cat?.affectionLevel ?: 0
+                            text = "Grooming",
+                            number = state.cat.grooming ?: 0
                         )
-                        MyBehaviour(text = "Child Friendly", number = state.cat?.childFriendly ?: 0)
-                        MyBehaviour(text = "Dog Friendly", number = state.cat?.dogFriendly ?: 0)
-                        MyBehaviour(text = "Energy Level", number = state.cat?.energyLevel ?: 0)
+                        MyBehaviour(text = "Stranger Friendly", number = state.cat.strangerFriendly)
+                        MyBehaviour(text = "Dog Friendly", number = state.cat.dogFriendly )
+                        MyBehaviour(text = "Energy Level", number = state.cat.energyLevel )
 
                         MyTitle(text = "Originates from")
                         Row(

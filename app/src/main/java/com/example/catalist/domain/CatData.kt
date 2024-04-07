@@ -10,11 +10,10 @@ class CatData(
     val lifeSpan: String,
     val weight: String,
     val adaptability: Int,
-    val affectionLevel: Int,
-    val childFriendly: Int,
+    val strangerFriendly: Int,
+    val grooming: Int,
     val dogFriendly: Int,
     val energyLevel: Int,
     val rare: Int,
     val link: String,
-) {
-}
+)

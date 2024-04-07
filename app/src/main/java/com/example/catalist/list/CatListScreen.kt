@@ -12,6 +12,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -141,43 +144,37 @@ fun CatListScreen(
             }
         },
         content = {
-            val scrollState = rememberScrollState()
-            Column(
+            LazyColumn(
                 modifier = Modifier
-                    .verticalScroll(scrollState)
                     .fillMaxSize()
                     .padding(it),
-                horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Top,
-            )
-            {
-                Spacer(modifier = Modifier.height(16.dp))
-                Spacer(modifier = Modifier.height(16.dp))
-                if(state.cats.isEmpty())
-                {
-                    if (state.isLoading) {
-                        BoxForStates("Loading...")
-                        CircularProgressIndicator()
-                    }
-                    else if (state.error != null)
-                        BoxForStates("Error: ${state.error.message}")
-                    else
-                        BoxForStates("No cats found")
-                }
-                else {
-                    state.cats.forEach {
-                        Column {
-                            key(it.id)
-                            {
-                                CatListItem(
-                                    data = it,
-                                    onClick = {
-                                        onClick(it)
-                                    }
-                                )
-                            }
-                            Spacer(modifier = Modifier.height(16.dp))
+            ) {
+                item {
+                    Spacer(modifier = Modifier.height(16.dp))
+                    Spacer(modifier = Modifier.height(16.dp))
+                    if (state.cats.isEmpty()) {
+                        if (state.isLoading) {
+                            BoxForStates("Loading...")
+                            CircularProgressIndicator()
+                        } else if (state.error != null) {
+                            BoxForStates("Error: ${state.error.message}")
+                        } else {
+                            BoxForStates("No cats found")
                         }
+                    }
+                }
+                items(state.cats) { cat ->
+                    Column {
+                        key(cat.id) {
+                            CatListItem(
+                                data = cat,
+                                onClick = {
+                                    onClick(cat)
+                                }
+                            )
+                        }
+                        Spacer(modifier = Modifier.height(16.dp))
                     }
                 }
             }

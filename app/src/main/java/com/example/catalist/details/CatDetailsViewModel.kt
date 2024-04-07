@@ -16,7 +16,6 @@ class CatDetailsViewModel constructor(
     private val catId: String
 ) : ViewModel() {
 
-    private val cat = Repository.getById(catId) ?: throw IllegalArgumentException("Cat not found")
     private val state = MutableStateFlow(CatDetailsState(catId = catId))
     val state1 = state.asStateFlow()
     private fun setState(reducer: CatDetailsState.() -> CatDetailsState) = state.getAndUpdate(reducer)
