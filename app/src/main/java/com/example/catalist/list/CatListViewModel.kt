@@ -6,6 +6,7 @@ import com.example.catalist.api.model.CatData
 import com.example.catalist.repository.Repository
 import com.example.catalist.list.model.CatUiModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.getAndUpdate
@@ -21,10 +22,34 @@ class CatListViewModel constructor(
     val state1 = state.asStateFlow()
     private fun setState(reducer: CatListState.() -> CatListState) = state.getAndUpdate(reducer)
 
+    private val events = MutableSharedFlow<CatUiEvent>()
+    fun setEvent(event: CatUiEvent) {
+        viewModelScope.launch {
+            events.emit(event)
+        }
+    }
+
     init{
+        observeEvents()
         loadCats()
     }
 
+    private fun observeEvents() {
+        viewModelScope.launch {
+            events.collect { it ->
+                when (it) {
+                    CatUiEvent.ClearSearch -> setState { copy(query = "", filteredCats = cats, isSearching = false)}
+                    CatUiEvent.CloseSearch -> setState { copy(isSearching = false)}
+                    is CatUiEvent.Search -> {
+                        setState { copy(isSearching = true, query = it.query, filteredCats = cats.filter { cat ->
+                            cat.name.contains(it.query, ignoreCase = true)
+                        })}
+                    }
+
+                }
+            }
+        }
+    }
     private fun loadCats()
     {
         viewModelScope.launch {

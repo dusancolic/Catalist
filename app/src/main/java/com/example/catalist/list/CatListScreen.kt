@@ -1,5 +1,7 @@
 package com.example.catalist.list
 
+import android.util.Log
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -67,7 +69,11 @@ fun NavGraphBuilder.catsList(route : String, navController : NavController) {
             state = state,
             onClick = {
                 navController.navigate("details/${it.id}")
-            })
+            },
+            eventPublisher = {
+                catListViewModel.setEvent(it)
+            }
+        )
     }
 }
 
@@ -78,11 +84,16 @@ fun CatListScreen(
     //items: List<CatData>,
     state: CatListState,
     onClick: (CatUiModel) -> Unit,
+    eventPublisher : (CatUiEvent) -> Unit,
 )
 {
     val keyboard = LocalSoftwareKeyboardController.current
     var query by remember {
         mutableStateOf("")
+    }
+    BackHandler(enabled = state.isSearching) {
+        eventPublisher(CatUiEvent.ClearSearch)
+        query = ""
     }
     Scaffold(
         topBar = {
@@ -103,8 +114,9 @@ fun CatListScreen(
                     modifier = Modifier.align(Alignment.CenterHorizontally),
                     query = query,
                     onQueryChange = {
+                        eventPublisher(CatUiEvent.Search(it))
                         query = it
-                     //   filteredItems = Repository.search(it)
+
                     },
                     onSearch = {
                         keyboard?.hide()
@@ -126,9 +138,12 @@ fun CatListScreen(
                     },
                     trailingIcon = {
                         if (query.isNotEmpty()) {
-                            IconButton(onClick = { query = ""
-                             //   filteredItems = Repository.search("")
-                                }){
+                            IconButton(onClick = {
+                                eventPublisher(CatUiEvent.ClearSearch)
+                                query = ""
+                                Log.d("isSearching", state.isSearching.toString())
+                             })
+                            {
                                 Icon(Icons.Default.Clear, contentDescription = "Cancel")
                             }
                         }
@@ -168,7 +183,8 @@ fun CatListScreen(
                         }
                     }
                 }
-                items(state.cats) { cat ->
+
+                items(if(state.isSearching) state.filteredCats else state.cats) { cat ->
                     Column {
                         key(cat.id) {
                             CatListItem(
@@ -191,7 +207,7 @@ private fun CatListItem(
     data: CatUiModel,
     onClick: () -> Unit,
     threeOfTemps: List<String> = remember {
-        randomThreeTemeperaments(data)
+        randomThreeTemperaments(data)
     },
 ) {
     Card(
@@ -254,7 +270,7 @@ private fun String.cutToLastDot(maxLength: Int): String {
         }
     }
 }
-private fun randomThreeTemeperaments(cat : CatUiModel) : List<String>
+private fun randomThreeTemperaments(cat : CatUiModel) : List<String>
 {
     val list = mutableListOf<String>()
 

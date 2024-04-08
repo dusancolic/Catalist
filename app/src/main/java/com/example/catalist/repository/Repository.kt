@@ -15,11 +15,6 @@ object Repository {
     fun getById(id: String) : CatData? {
         return mutableData.find { it.id == id }
     }
-    fun search(search: String) : List<CatData> {
-        if(search.isEmpty())
-            return mutableData
-        return mutableData.filter { it.name.contains(search, ignoreCase = true) }
-    }
     suspend fun loadCats() : List<CatData> {
         delay(2.seconds)
         val data = catApi.getAllCats()
