@@ -16,6 +16,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.AssistChip
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.CircularProgressIndicator
@@ -33,6 +34,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -190,8 +192,9 @@ fun CatDetailsScreen(
                             MyText(text = state.cat.origin)
                         }
                         MyTitle(text = "Link to Wikipedia page")
-                        MyText(text = state.cat.wikipedia_url)
 
+
+                        MyButton(text = state.cat.wikipedia_url,)
 
                     }
                 }
@@ -208,6 +211,25 @@ fun CatDetailsScreen(
                 }
 
             }
+        }
+    )
+
+}
+
+@Composable
+private fun MyButton(text : String)
+{
+    val uriHandler = LocalUriHandler.current
+    Button(
+        onClick ={
+            uriHandler.openUri(text)
+        },
+        modifier = Modifier.padding(16.dp),
+        content = {
+            Text(text = "Link to Wikipedia page",
+                color = Color.hsl(185F, 0.61F, 0.5F),
+                fontWeight = FontWeight.Bold
+            )
         }
     )
 }
