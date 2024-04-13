@@ -191,8 +191,6 @@ fun CatDetailsScreen(
                         {
                             MyText(text = state.cat.origin)
                         }
-                        MyTitle(text = "Link to Wikipedia page")
-
 
                         MyButton(text = state.cat.wikipedia_url,)
 
